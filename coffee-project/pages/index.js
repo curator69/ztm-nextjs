@@ -8,6 +8,26 @@ import Card from "../components/card";
 import coffeeStoresData from "../data/coffee-stores.json";
 
 export async function getStaticProps() {
+  fetch(
+    "https://api.foursquare.com/v3/places/nearby?ll=43.65267326999575,-79.39545615725015&query=coffee stores&v=20220105",
+    {
+      headers: {
+        Authorization: process.env.NEXT_PUBLIC_FOURSQUARE_API_KEY,
+      },
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      const transformedData =
+        data?.results?.map((venue) => {
+          return {
+            id: venue.fsq_id,
+            ...venue,
+          };
+        }) || [];
+      console.log(transformedData);
+    });
+
   return {
     props: {
       coffeeStores: coffeeStoresData,
