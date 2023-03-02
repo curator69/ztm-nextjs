@@ -42,7 +42,7 @@ const CoffeeStore = (props) => {
     return <div>Loading...</div>;
   }
 
-  const { address, name, neighbourhood, imgUrl } = props.CoffeeStore;
+  const { name, neighbourhood, imgUrl } = props.CoffeeStore;
 
   const handleUpvoteButton = () => {};
 

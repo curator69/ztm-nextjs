@@ -4,33 +4,31 @@ import styles from "../styles/Home.module.css";
 
 import Banner from "../components/Banner";
 import Card from "../components/card";
-
-import coffeeStoresData from "../data/coffee-stores.json";
+import { fetchCoffeeStores } from "../lib/coffee-stores";
 
 export async function getStaticProps() {
-  fetch(
-    "https://api.foursquare.com/v3/places/nearby?ll=43.65267326999575,-79.39545615725015&query=coffee stores&v=20220105",
+  const imagesArray = await fetchCoffeeStores();
+  const response = await fetch(
+    "https://api.foursquare.com/v3/places/nearby?ll=43.65267326999575,-79.39545615725015&query=coffee stores&v=20230302",
     {
       headers: {
         Authorization: process.env.NEXT_PUBLIC_FOURSQUARE_API_KEY,
       },
     }
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      const transformedData =
-        data?.results?.map((venue) => {
-          return {
-            id: venue.fsq_id,
-            ...venue,
-          };
-        }) || [];
-      console.log(transformedData);
-    });
+  );
+  const data = await response.json();
+
+  const transformedData =
+    data?.results?.map((venue) => {
+      return {
+        id: venue.fsq_id,
+        ...venue,
+      };
+    }) || [];
 
   return {
     props: {
-      coffeeStores: coffeeStoresData,
+      coffeeStores: { transformedData, imagesArray },
     },
   };
 }
@@ -39,6 +37,10 @@ export default function Home(props) {
   const handleOnBannerBtnClick = () => {
     console.log("hello");
   };
+
+  const { coffeeStores } = props;
+  const { transformedData, imagesArray } = coffeeStores;
+
   return (
     <div className={styles.container}>
       <Head>
@@ -59,16 +61,16 @@ export default function Home(props) {
             alt="hero image"
           />
         </div>
-        {props.coffeeStores.length > 0 && (
+        {transformedData.length > 0 && (
           <>
             <h2 className={styles.heading2}>Toronto stores</h2>
             <div className={styles.cardLayout}>
-              {props.coffeeStores.map((coffeeStore) => {
+              {transformedData.map((coffeeStore, i) => {
                 return (
                   <Card
                     key={coffeeStore.id}
                     name={coffeeStore.name}
-                    imgUrl={coffeeStore.imgUrl}
+                    imgUrl={imagesArray[i]?.imgUrl}
                     href={`/coffee-store/${coffeeStore.id}`}
                     className={styles.card}
                   />
