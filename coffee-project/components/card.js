@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import cls from "classnames";
 
-import styles from "./Card.module.css";
+import styles from "./card.module.css";
 
 const Card = (props) => {
   return (
