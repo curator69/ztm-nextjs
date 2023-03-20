@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 
-import Banner from "../components/banner";
+import Banner from "../components/Banner";
 import Card from "../components/card";
 
 import { fetchCoffeeStores } from "../lib/coffee-stores";

@@ -1,4 +1,4 @@
-import React from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
@@ -45,14 +45,14 @@ export async function getStaticPaths() {
 }
 
 const CoffeeStore = (initialProps) => {
-  const { useEffect, useState, useContext } = React;
   const router = useRouter();
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
 
   const id = router.query.id;
 
-  const [coffeeStore, setCoffeeStore] = useState(
-    initialProps.coffeeStore || {}
-  );
+  const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
 
   const {
     state: { coffeeStores },
@@ -85,24 +85,23 @@ const CoffeeStore = (initialProps) => {
   useEffect(() => {
     if (isEmpty(initialProps.coffeeStore)) {
       if (coffeeStores.length > 0) {
-        const findCoffeeStoreById = coffeeStores.find((coffeeStore) => {
+        const coffeeStoreFromContext = coffeeStores.find((coffeeStore) => {
           return coffeeStore.id.toString() === id; //dynamic id
         });
-        setCoffeeStore(findCoffeeStoreById);
-        handleCreateCoffeeStore(findCoffeeStoreById);
+
+        if (coffeeStoreFromContext) {
+          setCoffeeStore(coffeeStoreFromContext);
+          handleCreateCoffeeStore(coffeeStoreFromContext);
+        }
       }
     } else {
       // SSG
       handleCreateCoffeeStore(initialProps.coffeeStore);
     }
-  }, [id, initialProps.coffeeStore, coffeeStores]);
+  }, [id, initialProps, initialProps.coffeeStore]);
 
-  const {
-    name = "",
-    address = "",
-    neighbourhood = "",
-    imgUrl = "",
-  } = coffeeStore;
+  const { address, name, neighbourhood, imgUrl } = coffeeStore;
+
   const [votingCount, setVotingCount] = useState(0);
 
   const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
@@ -110,13 +109,10 @@ const CoffeeStore = (initialProps) => {
   useEffect(() => {
     if (data && data.length > 0) {
       setCoffeeStore(data[0]);
+
       setVotingCount(data[0].voting);
     }
   }, [data]);
-
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
 
   const handleUpvoteButton = async () => {
     try {
@@ -149,7 +145,7 @@ const CoffeeStore = (initialProps) => {
     <div className={styles.layout}>
       <Head>
         <title>{name}</title>
-        <meta name="description" content={`${name} coffee store`} />
+        <meta name="description" content={`${name} coffee store`}></meta>
       </Head>
       <div className={styles.container}>
         <div className={styles.col1}>
@@ -168,21 +164,19 @@ const CoffeeStore = (initialProps) => {
             height={360}
             className={styles.storeImg}
             alt={name}
-          />
+          ></Image>
         </div>
 
         <div className={cls("glass", styles.col2)}>
-          {address && (
-            <div className={styles.iconWrapper}>
-              <Image
-                src="/static/icons/places.svg"
-                width="24"
-                height="24"
-                alt="places icon"
-              />
-              <p className={styles.text}>{address}</p>
-            </div>
-          )}
+          <div className={styles.iconWrapper}>
+            <Image
+              src="/static/icons/places.svg"
+              width="24"
+              height="24"
+              alt="places icon"
+            />
+            <p className={styles.text}>{address}</p>
+          </div>
           {neighbourhood && (
             <div className={styles.iconWrapper}>
               <Image
