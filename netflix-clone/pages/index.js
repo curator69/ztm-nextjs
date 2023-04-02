@@ -8,8 +8,13 @@ import SectionCards from "../components/card/section-cards";
 
 import { getVideos } from "../lib/videos";
 
-export default function Home() {
+export async function getServerSideProps() {
   const disneyVideos = getVideos();
+
+  return { props: { disneyVideos } };
+}
+
+export default function Home({ disneyVideos }) {
   return (
     <div className={styles.container}>
       <Head>
@@ -28,7 +33,13 @@ export default function Home() {
 
       <div className={styles.sectionWrapper}>
         <SectionCards title="Disney" videos={disneyVideos} size="large" />
-        <SectionCards title="Disney" videos={disneyVideos} size="medium" />
+        <SectionCards title="Travel" videos={disneyVideos} size="small" />
+        <SectionCards
+          title="Productivity"
+          videos={disneyVideos}
+          size="medium"
+        />
+        <SectionCards title="Popular" videos={disneyVideos} size="small" />
       </div>
     </div>
   );
