@@ -41,6 +41,7 @@ const Navbar = (props) => {
             />
           </div>
         </a>
+
         <ul className={styles.navItems}>
           <li className={styles.navItem} onClick={handleOnClickHome}>
             Home
