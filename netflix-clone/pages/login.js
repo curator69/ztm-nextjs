@@ -1,6 +1,9 @@
+import { useEffect, useState } from "react";
+
+import { useRouter } from "next/router";
 import Head from "next/head";
 import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
 
 import { magic } from "../lib/magic-client";
 
@@ -10,6 +13,21 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [userMsg, setUserMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleComplete = () => {
+      setIsLoading(false);
+    };
+    router.events.on("routeChangeComplete", handleComplete);
+    router.events.on("routeChangeError", handleComplete);
+
+    return () => {
+      router.events.off("routeChangeComplete", handleComplete);
+      router.events.off("routeChangeError", handleComplete);
+    };
+  }, [router]);
 
   const handleOnChangeEmail = (e) => {
     setUserMsg("");
@@ -56,7 +74,6 @@ const Login = () => {
       setUserMsg("Enter a valid email address");
     }
   };
-
   return (
     <div className={styles.container}>
       <Head>
@@ -65,16 +82,18 @@ const Login = () => {
 
       <header className={styles.header}>
         <div className={styles.headerWrapper}>
-          <a className={styles.logoLink} href="/">
-            <div className={styles.logoWrapper}>
-              <Image
-                src="/static/netflix.svg"
-                alt="Netflix Logo"
-                width={150}
-                height={40}
-              />
-            </div>
-          </a>
+          <Link className={styles.logoLink} href="/">
+            <a>
+              <div className={styles.logoWrapper}>
+                <Image
+                  src="/static/netflix.svg"
+                  alt="Netflix logo"
+                  width="128px"
+                  height="34px"
+                />
+              </div>
+            </a>
+          </Link>
         </div>
       </header>
 
