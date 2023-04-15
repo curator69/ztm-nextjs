@@ -1,5 +1,5 @@
 import videoTestData from "../data/videos.json";
-// import { getMyListVideos, getWatchedVideos } from "./db/hasura";
+import { getMyListVideos, getWatchedVideos } from "./db/hasura";
 
 const fetchVideos = async (url) => {
   const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;

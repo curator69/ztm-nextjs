@@ -16,15 +16,15 @@ import { redirectUser } from "../utils/redirectUser";
 export async function getServerSideProps(context) {
   const { userId, token } = await redirectUser(context);
 
-  if (!userId) {
-    return {
-      props: {},
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
+  // if (!userId) {
+  //   return {
+  //     props: {},
+  //     redirect: {
+  //       destination: "/login",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
   const watchItAgainVideos = await getWatchItAgainVideos(userId, token);
 
   const disneyVideos = await getVideos("disney trailer");
@@ -64,7 +64,7 @@ export default function Home({
           videoId="4zH5iYM4wJo"
           title="Clifford the red dog"
           subTitle="a very cute dog"
-          imgUrl="/static/clifford.webp"
+          imgUrl="/static/interstellar_poster_0.webp"
         />
 
         <div className={styles.sectionWrapper}>
