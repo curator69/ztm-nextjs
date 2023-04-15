@@ -21,7 +21,7 @@ function MyApp({ Component, pageProps }) {
       }
     };
     handleLoggedIn();
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     const handleComplete = () => {
